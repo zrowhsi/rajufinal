@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{base}">
+
+<head>
+<title>Index</title>
+</head>
+
+<th:block layout:fragment="breadcrumb">
+	<li class="breadcrumb-item"><a href="#"><i
+			class="fa fa-dashboard"></i> Home</a></li>
+	<li class="active">Dashboard</li>
+</th:block>
+
+<div layout:fragment="page_content" id="page_content">
+	<div class="row">
+		<div class="col-md-3">
+
+			<!-- Profile Image -->
+			<div class="box box-primary">
+				<div class="box-body box-profile">
+					<img class="profile-user-img img-responsive img-circle"
+						src="../../dist/img/user4-128x128.jpg" alt="User profile picture">
+
+					<h3 class="profile-username text-center">
+						<span th:text="${custOne.name}"></span>
+					</h3>
+
+					<!-- <p class="text-muted text-center">
+						Address: <span th:text="${custOne.address}"></span>
+					</p>-->
+					<ul class="list-group list-group-unbordered">
+						<li class="list-group-item"><b>Address: </b> <a><span
+								th:text="${#strings.capitalize(custOne.address)}"></span> </a></li>
+						<li class="list-group-item"><b>Phone: </b> <a><span
+								th:text="${custOne.phone}"></span></a></li>
+						<li class="list-group-item" th:each="customer : ${custOne}"><b>Deu
+								Amount: </b> <a> Rs <span
+								th:with="result=${#aggregates.sum(customer.customerDetails.![totalAmount])}, result2=${#aggregates.sum(customer.payment.![paidAmount])}">
+									<span th:if="${result2 == null}" th:text="${result}"></span> <span
+									th:if="${result2 != null}" th:text="${result} - ${result2}"></span>
+							</span>
+						</a></li>
+						<!-- <li class="list-group-item"><b>Phone</b> <a
+							class="pull-right"><span th:text="${custOne.phone}"></span></a></li>
+							-->
+					</ul>
+
+					<a href="#" class="btn btn-primary btn-block"><b>Edit</b></a>
+				</div>
+				<!-- /.box-body -->
+			</div>
+			<!-- /.box -->
+
+			
+		</div>
+		<!-- /.col -->
+		<div class="col-md-9">
+<div class="panel">
+<div class="panel-body bg-info">
+			<!-- Post -->
+			<div class="col-xs-6">
+				<div class="box">
+					<div class="box-header bg-aqua">
+						<center>
+							<h3 class="box-title" style="color: red;">
+								<b>Item Form</b>
+							</h3>
+						</center>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body bg-warning">
+
+						<form method="POST" th:action="@{/customer/buy}"
+							th:object="${customerDetails}">
+
+							<div class="form-group">
+								<label class="control-label col-sm-4 col-xs-5" for="description">
+									Item name </label>
+								<div class="col-sm-7 col-xs-8  input-group">
+									<div class="input-group-addon">
+										<i class="fa fa-text-width"></i>
+									</div>
+									<input type="text" class="form-control" th:field="*{itemName}"
+										placeholder="" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-4 col-xs-5" for="description">
+									Quantity </label>
+								<div class="col-sm-7 col-xs-8  input-group">
+									<div class="input-group-addon">
+										<i class="fa fa-sort-numeric-asc "></i>
+									</div>
+									<input type="text" class="form-control" th:field="*{quantity}"
+										placeholder="" />
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="control-label col-sm-4 col-xs-5" for="description">
+									Total Amount </label>
+								<div class="col-sm-7 col-xs-8  input-group">
+									<div class="input-group-addon">
+										<i class="fa fa-inr"></i>
+									</div>
+									<input type="text" class="form-control"
+										th:field="*{totalAmount}" placeholder="" />
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-4 col-xs-5" for="description">
+									Date </label>
+								<div class="col-sm-7 col-xs-8  input-group">
+									<div class="input-group-addon">
+										<i class="fa fa-calendar"></i>
+									</div>
+									<input type="date" class="form-control" th:field="*{date}"
+										placeholder="" />
+								</div>
+							</div>
+							<input type="hidden" name="customer" th:value="${custOne.id}">
+							<div class="form-group">
+								<label class="col-sm-3"></label>
+								<div class="col-sm-7">
+									<button type="submit" class=" btn btn-primary">
+										<span class='fa fa-save'></span> Add
+									</button>
+								</div>
+							</div>
+
+						</form>
+					</div>
+					<!-- /.box-body -->
+				</div>
+
+
+
+			</div>
+			<!-- /.nav-tabs-custom -->
+			<div class="col-xs-6">
+			<div class="box">
+				<div class="box-header bg-aqua">
+					<center><h3 class="box-title" style="color:red;"><b>Payment Form</b></h3></center>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+					<form action="#" th:action="@{/customer/payment}"
+						th:object="${payment}" method="post">
+
+						<div class="form-group">
+							<label class="control-label col-sm-4 col-xs-5" for="description">
+								Payment Date</label>
+							<div class="col-sm-5 col-xs-5  input-group">
+								<div class="input-group-addon">
+									<i class="fa fa-calendar"></i>
+								</div>
+								<input type="date" class="form-control" th:field="*{date}"
+									placeholder="" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-4 col-xs-5" for="description">
+								Payment Method </label>
+							<div class="col-sm-5 col-xs-5  input-group">
+								<div class="input-group-addon">
+									<i class="fa fa-money"></i>
+								</div>
+								<select class="form-control select2" style="width: 100%;"
+									th:field="*{paidBy}">
+									<option
+										th:each="paidBy : ${T(np.com.ishworb.app.entity.PaymentMode).values()}"
+										th:value="${paidBy}" th:text="${paidBy}"></option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="control-label col-sm-4 col-xs-5" for="description">
+								Paid Amount </label>
+							<div class="col-sm-5 col-xs-5  input-group">
+								<div class="input-group-addon">
+									<i class="fa fa-inr"></i>
+								</div>
+								<input type="text" class="form-control" th:field="*{paidAmount}"
+									placeholder="" />
+							</div>
+						</div>
+						<input type="hidden" name="customer" th:value="${custOne.id}">
+						<div class="form-group">
+							<label class="col-sm-3"></label>
+							<div class="col-sm-7">
+								<button type="submit" class=" btn btn-primary">
+									<span class='fa fa-save'></span> Payment
+								</button>
+							</div>
+						</div>
+
+					</form>
+				</div>
+				<!-- /.box-body -->
+			</div>
+			<!-- /.box -->
+		</div>
+		
+		
+		</div>
+		</div>
+		<!-- panel end -->	
+			
+		</div>
+		<!-- /.col -->
+	</div>
+	<!-- /.row -->
+
+
+
+
+</div>
+<th:block layout:fragment="scripts">
+	<script type="text/javascript">
+		
+	</script>
+</th:block>

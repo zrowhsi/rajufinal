@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{base}">
+
+<head>
+<title>Customer List</title>
+<link rel="stylesheet"
+	th:href="@{/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css}"
+	href="../../static/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+
+</head>
+<th:block layout:fragment="breadcrumb">
+	<li class="breadcrumb-item"><a href="#"><i
+			class="fa fa-dashboard"></i> Home</a></li>
+	<li class="active">All Customer</li>
+</th:block>
+<div layout:fragment="page_content" id="page_content">
+	 <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title ">
+              <button type="button" class="btn btn-success" data-toggle="modal"
+							data-target="#addClassModal">Add new</button>
+              </h3>
+              <!-- modal for register new -->
+                <div class="modal fade" id="addClassModal" tabindex="-1"
+						role="dialog" aria-labelledby="addClassModalLabel"
+						aria-hidden="true">
+						<div class="modal-dialog" role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="addClassModalLabel">Add new</h5>
+									<button type="button" class="close" data-dismiss="modal"
+										aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<form th:action="@{/customer/register}" th:object="${customer}"
+										method="post">
+										<div class="form-group">
+											<label class="control-label col-sm-3 col-xs-4"
+												for="description"> Company Name </label>
+											<div class="col-sm-7 col-xs-8  input-group">
+												<div class="input-group-addon">
+													<i class="fa fa-bandcamp"></i>
+												</div>
+												<input type="text" class="form-control" th:field="*{name}" />
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-sm-3 col-xs-4"
+												for="description"> Address</label>
+											<div class="col-sm-7 col-xs-8 input-group">
+												<div class="input-group-addon">
+													<i class="fa fa-map"></i>
+												</div>
+												<input type="text" class="form-control"
+													th:field="*{address}" />
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-sm-3 col-xs-4"
+												for="description"> Phone </label>
+											<div class="col-sm-7 col-xs-8 input-group">
+												<div class="input-group-addon">
+													<i class="fa fa-phone"></i>
+												</div>
+												<input type="text" class="form-control" th:field="*{phone}">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="control-label col-sm-3 col-xs-4"
+												for="description"> Customer Type </label>
+											<div class="col-sm-7 col-xs-8 input-group">
+												<div class="input-group-addon">
+													<i class="fa fa-pencil"></i>
+												</div>
+												<select class="form-control select2" style="width: 100%;"
+													th:field="*{type}">
+													<option value="">-SELECT-</option>
+													<option th:each="dropDownItem : ${dropDownItems}"
+														th:value="${dropDownItem.value}"
+														th:text="${dropDownItem.key}" />
+												</select>
+											</div>
+										</div>
+										<hr>
+										<div class="form-group">
+											<label class="col-sm-3"></label>
+											<div class="col-sm-7">
+												<button type="button" class="btn btn-warning"
+													data-dismiss="modal">
+													<span class='fa fa-window-close-o'> </span> Close
+												</button>
+												<button type="submit" class=" btn btn-primary">
+													<span class='fa fa-save'></span> Save
+												</button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- end of form modal -->
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+            <div th:if="${not #lists.isEmpty(custList)}">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Phone</th>
+					<th>Total Amount</th>
+					<th>Payment Amount</th>
+					<th>Remaining Amount</th>
+					<th>Actions</th>
+				</tr>
+                </thead>
+                <tbody>
+                <tr th:each="customer : ${cust}">
+					<td th:text="${customer.name}"></td>
+					<td th:text="${customer.address}"></td>
+					<td th:text="${customer.phone}"></td>
+					<td
+						th:with="result1=${#aggregates.sum(customer.customerDetails.![totalAmount])}">
+						<span th:text="${result1}"></span>
+					</td>
+					<td
+						th:with="result3=${#aggregates.sum(customer.payment.![paidAmount])}">
+						<span th:if="${result3 == null}" th:text="0.0"></span>
+						<span th:if="${result3 != null}" th:text="${result3}"></span>
+					</td>
+					<td
+						th:with="result=${#aggregates.sum(customer.customerDetails.![totalAmount])}, result2=${#aggregates.sum(customer.payment.![paidAmount])}">
+						<span th:if="${result2 == null}" th:text="${result}"></span>
+						<span th:if="${result2 != null}" th:text="${result} - ${result2}"></span>
+					</td>
+					<td><a th:href="@{/customer/list/{id}(id=${customer.id})}"><button class="btn btn-primary fa fa-eye"> View</button></a>
+					<a th:href="@{/customer/buy/{id}(id=${customer.id})}"><button class="btn btn-warning fa fa-shopping-cart"> Buy</button></a>
+					</td>
+				</tr>
+				</tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+	</div>
+</div>
+
+<th:block layout:fragment="scripts">
+<script src="../../static/bower_components/datatables.net/js/jquery.dataTables.min.js"
+		th:src="@{/bower_components/datatables.net/js/jquery.dataTables.min.js}"></script>
+	<!-- Bootstrap 3.3.7 -->
+	<script src="../../static/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"
+		th:src="@{/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+		
+	<script>
+	$(function () {
+	    $('#example1').DataTable()
+	    $('#example2').DataTable({
+	      'paging'      : true,
+	      'lengthChange': false,
+	      'searching'   : false,
+	      'ordering'    : true,
+	      'info'        : true,
+	      'autoWidth'   : false
+	    })
+	  })
+	</script>
+	
+	
+</th:block>
+
+

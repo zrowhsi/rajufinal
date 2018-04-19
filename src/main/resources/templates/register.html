@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<form action="#" th:action="@{/customer/register}"
+		th:object="${customer}" method="post">
+		<p>
+			Name: <input type="text" th:field="*{name}" />
+		</p>
+		<p>
+			Address: <input type="text" th:field="*{address}" />
+		</p>
+		<p>
+			Phone: <input type="text" th:field="*{phone}" />
+		</p>
+		<!-- <select th:field="*{type}">
+			<option value="">--</option>
+			<option value="seller">SELLER</option>
+			<option value="buyer">BUYER</option>
+		</select>
+		-->
+		<select th:field="*{type}">
+			<option value="">-SELECT-</option>
+			<option th:each="dropDownItem : ${dropDownItems}"
+				th:value="${dropDownItem.value}" th:text="${dropDownItem.key}" />
+		</select>
+		<p>
+			<input type="submit" value="Submit" /> <input type="reset"
+				value="Reset" />
+		</p>
+	</form>
+	<form action="#" th:action="@{/customer/register}"
+		th:object="${customer}" method="post">
+		<p>
+			Name: <input type="text" th:field="*{name}" />
+		</p>
+		<p>
+			Address: <input type="text" th:field="*{address}" />
+		</p>
+		<p>
+			Phone: <input type="text" th:field="*{phone}" />
+		</p>
+		<!-- <select th:field="*{type}">
+			<option value="">--</option>
+			<option value="seller">SELLER</option>
+			<option value="buyer">BUYER</option>
+		</select>
+		-->
+		<select th:field="*{type}">
+			<option value="">-SELECT-</option>
+			<option th:each="dropDownItem : ${dropDownItems}"
+				th:value="${dropDownItem.value}" th:text="${dropDownItem.key}" />
+		</select>
+		<p>
+			<input type="submit" value="Submit" /> <input type="reset"
+				value="Reset" />
+		</p>
+	</form>
+	
+</body>
+</html>

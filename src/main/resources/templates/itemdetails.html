@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<body>
+	<form method="POST" th:action="@{/customer/new}"
+		th:object="${customerDetails}">
+		<p>
+		Item Name:<input type="text" class="form-control"
+			th:field="*{itemName}" placeholder="" /></p>
+		<p>
+		Quantity:<input type="text" class="form-control"
+			th:field="*{quantity}" placeholder="" /></p>
+			<p>Total Amount: <input
+			type="text" class="form-control"
+			th:field="*{totalAmount}" placeholder="" /> </p>
+			<p>Date: <input
+			type="text" class="form-control"
+			th:field="*{date}" placeholder="" /></p>
+			 <select
+			th:field="*{customer}" class="form-control">
+			<option th:each="customer: ${customers}"
+				th:value="${customer.id}" th:text="${customer.name}"></option>
+		</select>
+		<button type="submit" class="btn btn-success">Submit</button>
+	</form>
+	<br>
+	<form action="#" th:action="@{/customer/payment}" th:object="${payment}" method="post">
+            
+            <label for="date">Payment Date:</label>
+            <input type="text" th:field="*{date}"  />
+            
+            <label for="paymentMethod">Payment method:</label>
+           <select th:field="*{paidBy}">
+  <option th:each="paidBy : ${T(np.com.ishworb.app.entity.PaymentMode).values()}" th:value="${paidBy}" th:text="${paidBy}"></option>
+</select>
+            
+             <select
+			th:field="*{customer}" class="form-control">
+			<option th:each="customer: ${customers}"
+				th:value="${customer.id}" th:text="${customer.name}"></option>
+		</select>
+            
+            <label for="balance">Paid Amount:</label>
+            <input type="text" th:field="*{paidAmount}" size="10" />
+            
+            <input type="submit" />
+        </form>
+</body>
+</html>

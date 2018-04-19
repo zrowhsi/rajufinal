@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{base}">
+
+<head>
+<title th:text="${custOne.name}"></title>
+     	<link rel="stylesheet"
+     	th:href="@{/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css}"
+     	href="../../static/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+</head>
+
+<th:block layout:fragment="breadcrumb">
+	<li class="breadcrumb-item"><a href="#"><i
+			class="fa fa-dashboard"></i> <span th:text="${custOne.name}"></span>'s</a></li>
+	<li class="active"> Details</li>
+</th:block>
+
+<div layout:fragment="page_content" id="page_content">
+
+	<div class="row">
+		<div class="col-md-3">
+
+			<!-- Profile Image -->
+			<div class="box box-primary">
+				<div class="box-body box-profile">
+					<img class="profile-user-img img-responsive img-circle"
+						src="../../dist/img/user4-128x128.jpg" alt="User profile picture">
+
+					<h3 class="profile-username text-center">
+						<span th:text="${custOne.name}"></span>
+					</h3>
+
+					<!-- <p class="text-muted text-center">
+						Address: <span th:text="${custOne.address}"></span>
+					</p>-->
+					<ul class="list-group list-group-unbordered">
+						<li class="list-group-item"><b>Address: </b> <a><span th:text="${#strings.capitalize(custOne.address)}"></span>
+						</a></li>
+						<li class="list-group-item"><b>Phone: </b> <a><span th:text="${custOne.phone}"></span></a></li>
+						<li class="list-group-item" th:each="customer : ${custOne}"><b>Deu Amount: </b> <a>
+									Rs <span th:with="result=${#aggregates.sum(customer.customerDetails.![totalAmount])}, result2=${#aggregates.sum(customer.payment.![paidAmount])}">
+										<span th:if="${result2 == null}" th:text="${result}"></span> 
+										<span th:if="${result2 != null}" th:text="${result} - ${result2}"></span>
+									</span>
+								</a></li>
+								<!-- <li class="list-group-item"><b>Phone</b> <a
+							class="pull-right"><span th:text="${custOne.phone}"></span></a></li>
+							-->
+					</ul>
+
+					<a href="#" class="btn btn-primary btn-block"><b>Edit</b></a>
+				</div>
+				<!-- /.box-body -->
+			</div>
+			<!-- /.box -->
+
+			<!-- About Me Box -->
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">More</h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body"></div>
+				<!-- /.box-body -->
+			</div>
+			<!-- /.box -->
+		</div>
+		<!-- /.col -->
+		<div class="col-md-9">
+			<div class="nav-tabs-custom">
+				<ul class="nav nav-tabs">
+					<li class="active"><a href="#activity" data-toggle="tab">Item
+							Details</a></li>
+					<li><a href="#timeline" data-toggle="tab">Payment Details</a></li>
+				</ul>
+				<div class="tab-content">
+					<div class="active tab-pane" id="activity">
+						<!-- Post -->
+						<div class="post">
+
+							<div th:if="${not #lists.isEmpty(custDetails)}">
+								<table id="example1" class="table table-bordered table-striped">
+									<thead>
+										<tr>
+											<th>SN</th>
+											<th>Item name</th>
+											<th>Purchase Date</th>
+											<th>Total</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="customerd ,rowStat: ${custDetails}">
+											<td th:text="${rowStat.count}"></td>
+											<td th:text="${customerd.itemName}"></td>
+											<td th:text="${#dates.format(customerd.date, 'yyyy-MM-dd')}"></td>
+											<td th:text="${customerd.totalAmount}"></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- /.post -->
+
+
+					</div>
+					<!-- /.tab-pane -->
+					<div class="tab-pane" id="timeline">
+						<!-- payment table -->
+						<div th:if="${not #lists.isEmpty(payments)}">
+							<table id="example2" class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th>SN</th>
+										<th>Date</th>
+										<th>payment mode</th>
+										<th>total</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="payment,rowStat: ${payments}">
+										<td th:text="${rowStat.count}"></td>
+										<td th:text="${#dates.format(payment.date, 'yyyy-MM-dd')}"></td>
+										<td th:text="${payment.paidBy}"></td>
+										<td th:text="${payment.paidAmount}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- /.tab-pane -->
+
+				</div>
+				<!-- /.tab-content -->
+			</div>
+			<!-- /.nav-tabs-custom -->
+		</div>
+		<!-- /.col -->
+	</div>
+	<!-- /.row -->
+
+</div>
+<th:block layout:fragment="scripts">
+	<script src="../../static/bower_components/datatables.net/js/jquery.dataTables.min.js"
+th:src="@{/bower_components/datatables.net/js/jquery.dataTables.min.js}"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="../../static/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"
+th:src="@{/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+<script>
+  $(function () {
+    $('#example1').DataTable()
+  });
+  $(document).ready(function() {
+    $('#example2').DataTable();
+} );
+</script>
+</th:block>

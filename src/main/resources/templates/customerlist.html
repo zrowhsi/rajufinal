@@ -1,0 +1,92 @@
+     <!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{base}">
+
+<head>
+<title>Customer List</title>
+<link rel="stylesheet"
+	th:href="@{/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css}"
+	href="../../static/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+
+</head>
+<th:block layout:fragment="breadcrumb">
+	<li class="breadcrumb-item"><a href="#"><i
+			class="fa fa-dashboard"></i> Home</a></li>
+	<li class="active">Dashboard</li>
+</th:block>
+<div layout:fragment="page_content" id="page_content">
+	 <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">Data Table With Full Features</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+            <div th:if="${not #lists.isEmpty(custList)}">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Phone</th>
+					<th>Total Amount</th>
+					<th>Payment Amount</th>
+					<th>Remaining Amount</th>
+				</tr>
+                </thead>
+                <tbody>
+                <tr th:each="customer : ${cust}">
+					<td th:text="${customer.name}"></td>
+					<td th:text="${customer.address}"></td>
+					<td th:text="${customer.phone}"></td>
+					<td
+						th:with="result1=${#aggregates.sum(customer.customerDetails.![totalAmount])}">
+						<span th:text="${result1}"></span>
+					</td>
+					<td
+						th:with="result3=${#aggregates.sum(customer.payment.![paidAmount])}">
+						<span th:if="${result3 == null}" th:text="0.0"></span>
+						<span th:if="${result3 != null}" th:text="${result3}"></span>
+					</td>
+					<td
+						th:with="result=${#aggregates.sum(customer.customerDetails.![totalAmount])}, result2=${#aggregates.sum(customer.payment.![paidAmount])}">
+						<span th:if="${result2 == null}" th:text="${result}"></span>
+						<span th:if="${result2 != null}" th:text="${result} - ${result2}"></span>
+					</td>
+				</tr>
+				</tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+	</div>
+</div>
+
+<th:block layout:fragment="scripts">
+<script src="../../static/bower_components/datatables.net/js/jquery.dataTables.min.js"
+		th:src="@{/bower_components/datatables.net/js/jquery.dataTables.min.js}"></script>
+	<!-- Bootstrap 3.3.7 -->
+	<script src="../../bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"
+		th:src="@{/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js}"></script>
+	<script>
+  $(function () {
+    $('#example1').DataTable({
+      'paging'      : true,
+      'lengthChange': false,
+      'searching'   : false,
+      'ordering'    : true,
+      'info'        : true,
+      'autoWidth'   : false
+    })
+  })
+</script>
+</th:block>
+     
